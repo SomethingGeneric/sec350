@@ -29,6 +29,16 @@ nat {
                 address masquerade
             }
         }
+        rule 20 {
+            description "NAT LAN to WAN"
+            outbound-interface eth0
+            source {
+                address 172.16.150.0/24
+            }
+            translation {
+                address masquerade
+            }
+        }
     }
 }
 protocols {
@@ -43,7 +53,10 @@ service {
     dns {
         forwarding {
             allow-from 172.16.50.0/29
+            allow-from 172.160.150.0/24
+            allow-from 172.16.150.0/24
             listen-address 172.16.50.2
+            listen-address 172.16.150.2
             system
         }
     }
@@ -95,6 +108,11 @@ system {
             }
             facility protocols {
                 level debug
+            }
+        }
+        host 172.16.50.5 {
+            facility authpriv {
+                level info
             }
         }
     }
