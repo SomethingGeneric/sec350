@@ -42,6 +42,11 @@ nat {
     }
 }
 protocols {
+    rip {
+        interface eth2 {
+        }
+        network 172.16.50.0/29
+    }
     static {
         route 0.0.0.0/0 {
             next-hop 10.0.17.2 {
@@ -108,11 +113,6 @@ system {
             }
             facility protocols {
                 level debug
-            }
-        }
-        host 172.16.50.5 {
-            facility authpriv {
-                level info
             }
         }
     }
