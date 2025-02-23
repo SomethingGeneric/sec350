@@ -6,6 +6,7 @@ firewall {
             action accept
             state {
                 established enable
+                related enable
             }
         }
         rule 10 {
@@ -25,6 +26,7 @@ firewall {
             action accept
             state {
                 established enable
+                related enable
             }
         }
     }
@@ -35,6 +37,7 @@ firewall {
             action accept
             state {
                 established enable
+                related enable
             }
         }
         rule 11 {
@@ -57,7 +60,7 @@ firewall {
         }
     }
     name LAN-to-WAN {
-        default-action drop
+        default-action accept
         enable-default-log
         rule 1 {
             action accept
@@ -77,12 +80,13 @@ firewall {
         }
     }
     name WAN-to-LAN {
-        default-action drop
+        default-action accept
         enable-default-log
         rule 1 {
             action accept
             state {
                 established enable
+                related enable
             }
         }
     }
@@ -123,6 +127,16 @@ nat {
             outbound-interface eth0
             source {
                 address 172.16.150.0/24
+            }
+            translation {
+                address masquerade
+            }
+        }
+        rule 30 {
+            description "NAT for MGMT network"
+            outbound-interface eth0
+            source {
+                address 172.16.200.0/28
             }
             translation {
                 address masquerade
