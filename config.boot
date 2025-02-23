@@ -1,3 +1,92 @@
+firewall {
+    name DMZ-to-LAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+        rule 10 {
+            action accept
+            description "wazuh agent comms"
+            destination {
+                address 172.16.200.10
+                port 1514,1515
+            }
+            protocol tcp
+        }
+    }
+    name DMZ-to-WAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+    }
+    name LAN-to-DMZ {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+        rule 11 {
+            action accept
+            description 80/tcp
+            destination {
+                address 172.16.50.3
+                port 80
+            }
+            protocol tcp
+        }
+        rule 12 {
+            action accept
+            description SSH
+            destination {
+                address 172.16.50.0/29
+                port 22
+            }
+            protocol tcp
+        }
+    }
+    name LAN-to-WAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+        }
+    }
+    name WAN-to-DMZ {
+        default-action drop
+        enable-default-log
+        rule 10 {
+            action accept
+            description "Allow HTTP from WAN to DMZ"
+            destination {
+                address 172.16.50.3
+                port 80
+            }
+            protocol tcp
+        }
+    }
+    name WAN-to-LAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+    }
+}
 interfaces {
     ethernet eth0 {
         address 10.0.17.115/24
@@ -115,6 +204,47 @@ system {
                 level debug
             }
         }
+    }
+}
+zone-policy {
+    zone DMZ {
+        from LAN {
+            firewall {
+                name LAN-to-DMZ
+            }
+        }
+        from WAN {
+            firewall {
+                name WAN-to-DMZ
+            }
+        }
+        interface eth1
+    }
+    zone LAN {
+        from DMZ {
+            firewall {
+                name DMZ-to-LAN
+            }
+        }
+        from WAN {
+            firewall {
+                name WAN-to-LAN
+            }
+        }
+        interface eth2
+    }
+    zone WAN {
+        from DMZ {
+            firewall {
+                name DMZ-to-WAN
+            }
+        }
+        from LAN {
+            firewall {
+                name LAN-to-WAN
+            }
+        }
+        interface eth0
     }
 }
 
