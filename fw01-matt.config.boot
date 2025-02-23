@@ -70,6 +70,15 @@ firewall {
             }
         }
     }
+    name MGMT-to-DMZ {
+        rule 1 {
+            action accept
+            state {
+                established enable
+                related enable
+            }
+        }
+    }
     name WAN-to-DMZ {
         default-action drop
         enable-default-log
