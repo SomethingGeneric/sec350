@@ -1,3 +1,68 @@
+firewall {
+    name LAN-to-MGMT {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+        rule 10 {
+            action accept
+            description "wazuh agent"
+            destination {
+                address 172.16.200.10
+                port 1514,1515
+            }
+            protocol tcp
+        }
+        rule 11 {
+            action accept
+            description "wazuh dashboard"
+            destination {
+                address 172.16.200.10
+                port 443
+            }
+            protocol tcp
+        }
+        rule 12 {
+            action accept
+            description "SSH to wazuh"
+            destination {
+                address 172.16.200.10
+                port 22
+            }
+            protocol tcp
+        }
+    }
+    name MGMT-to-LAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+        rule 10 {
+            action accept
+            description "Out allowed to LAN"
+            destination {
+                address 172.16.150.0/24
+            }
+            protocol all
+        }
+        rule 11 {
+            action accept
+            description "Out allowed to DMZ"
+            destination {
+                address 172.16.50.0/29
+            }
+            protocol all
+        }
+    }
+}
 interfaces {
     ethernet eth0 {
         address 172.16.150.3/24
@@ -97,6 +162,24 @@ system {
                 level debug
             }
         }
+    }
+}
+zone-policy {
+    zone LAN {
+        from MGMT {
+            firewall {
+                name MGMT-to-LAN
+            }
+        }
+        interface eth0
+    }
+    zone MGMT {
+        from LAN {
+            firewall {
+                name LAN-to-MGMT
+            }
+        }
+        interface eth1
     }
 }
 
