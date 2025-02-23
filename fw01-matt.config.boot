@@ -6,6 +6,7 @@ firewall {
             action accept
             state {
                 established enable
+                related enable
             }
         }
         rule 10 {
@@ -25,6 +26,7 @@ firewall {
             action accept
             state {
                 established enable
+                related enable
             }
         }
     }
@@ -35,6 +37,7 @@ firewall {
             action accept
             state {
                 established enable
+                related enable
             }
         }
         rule 11 {
@@ -61,6 +64,10 @@ firewall {
         enable-default-log
         rule 1 {
             action accept
+            state {
+                established enable
+                related enable
+            }
         }
     }
     name WAN-to-DMZ {
@@ -83,6 +90,7 @@ firewall {
             action accept
             state {
                 established enable
+                related enable
             }
         }
     }
