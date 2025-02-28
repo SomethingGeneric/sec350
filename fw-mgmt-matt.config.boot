@@ -1,4 +1,13 @@
 firewall {
+    name DMZ-to-MGMT {
+        rule 1 {
+            action accept
+            state {
+                established enable
+                related enable
+            }
+        }
+    }
     name LAN-to-MGMT {
         default-action drop
         enable-default-log
@@ -34,6 +43,15 @@ firewall {
                 port 22
             }
             protocol tcp
+        }
+    }
+    name MGMT-to-DMZ {
+        rule 1 {
+            action accept
+            state {
+                established enable
+                related enable
+            }
         }
     }
     name MGMT-to-LAN {
