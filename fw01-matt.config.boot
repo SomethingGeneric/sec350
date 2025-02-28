@@ -24,10 +24,6 @@ firewall {
         enable-default-log
         rule 1 {
             action accept
-            state {
-                established enable
-                related enable
-            }
         }
     }
     name LAN-to-DMZ {
@@ -69,6 +65,13 @@ firewall {
     name WAN-to-DMZ {
         default-action drop
         enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+                related enable
+            }
+        }
         rule 10 {
             action accept
             description "Allow HTTP from WAN to DMZ"
